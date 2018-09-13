@@ -6,4 +6,4 @@ Main Page
 =========
 
 * [Lab 1](lab1)
-
+* [Milestone 1](milestone1)
