@@ -1,10 +1,10 @@
-#define SENSOR_FL_PIN 2
-#define SENSOR_FR_PIN 3
+#define SENSOR_FL_PIN 3
+#define SENSOR_FR_PIN 2
 #define SENSOR_BL_PIN 4
 #define SENSOR_BR_PIN 5
 
-#define SERVO_L_PIN 11
-#define SERVO_R_PIN 10
+#define SERVO_L_PIN 10
+#define SERVO_R_PIN 11
 
 #include "Servo.h"
 
@@ -38,15 +38,15 @@ void SENSOR_FR_ISR() {
 }
 
 bool on_line(int reading) {
-  return reading < 1000;
+  return (reading < 1000);
 }
 
 bool fl_on_line() {
-  return on_line(SENSOR_FR_READING);
+  return on_line(SENSOR_FL_READING);
 }
 
 bool fr_on_line() {
-  return on_line(SENSOR_FL_READING);
+  return on_line(SENSOR_FR_READING);
 }
 
 
@@ -59,11 +59,11 @@ void servo_r_stop() {
 }
 
 void servo_l_forward() {
-  servo_l.write(0);
+  servo_l.write(180);
 }
 
 void servo_r_forward() {
-  servo_r.write(180);
+  servo_r.write(0);
 }
 
 void servo_l_backward() {
@@ -91,13 +91,29 @@ void rotate_r() {
 
 void follow_line() {
   for (;;) {
-    while (fl_on_line() && !fr_on_line) {
-      rotate_l();
-      delay(100);
+    while (fl_on_line() && !fr_on_line()) {
+      rotate_l();      
     }
-    while (fr_on_line() && !fl_on_line) {
+    while (fr_on_line() && !fl_on_line()) {
       rotate_r();
-      delay(100);
+    }
+    forward();
+  }
+}
+
+void figure_8() {
+  for (;;) {
+    while (fl_on_line() && !fr_on_line()) {
+      rotate_l();
+    }
+    while (fr_on_line() && !fl_on_line()) {
+      rotate_r();
+    }
+    if (fr_on_line() && fl_on_line()){
+      while(fr_on_line() || fl_on_line()){
+        servo_l_stop();
+        servo_r_forward(); //turns left at every cross. Not using official rotate function because that one moves backward as it turns and messes up line-following
+      }
     }
     forward();
   }
@@ -134,7 +150,7 @@ void setup() {
 
 void loop() {
   // These delays are purely for ease of reading.
-  follow_line();
+  figure_8();
   Serial.println("Sensor 0");
   Serial.println(SENSOR_FR_READING);
   delay(500);
