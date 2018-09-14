@@ -13,6 +13,7 @@ The robot used two line sensors to complete the tasks below.
 The sensors were placed side by side (approximately one inch apart), symmetrical
 to the center frame of the robot. When centered, the white line would lie
 between the sensors.
+
 ![Front View](media/milestone1-front-view.png "Front View")
 
 ## Following a Line
@@ -22,12 +23,13 @@ when following the line correctly. We implemented logic so if one sensor
 detected white, which the robot would immediately turn in the opposite direction
 until that sensor did not detect white anymore. This is represented in the image
 below, where the line sensors are the orange rectangles.
+
 ![Line Following Diagram](media/milestone1-line-follow.png "Line Following Diagram")
 
 Here is pseudo code for this idea. Note that because the line sensors return a
 large range of values when analog read, we had to set a threshold for dark and
-light values. Any analog reading <1000 was considered to be white; a reading
->1000 was considered to be black. 
+light values. Any analog reading \<1000 was considered to be white; a reading
+\>1000 was considered to be black.
 
     while (1)
       while left sensor on line and right sensor not on line
@@ -77,5 +79,6 @@ reached its first, sixth, seventh, or eighth intersection, it would turn left.
 If the robot had just reached its second, third, fourth, or fifth intersection,
 it would turn right. After completing a figure 8, the intersection count would
 reset. This allowed the robot to complete the figure 8 continuously.
+
 ![Figure 8](media/milestone1-figure-8.gif "Figure 8")
 

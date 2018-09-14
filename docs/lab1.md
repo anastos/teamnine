@@ -95,6 +95,7 @@ potentiometer.
 ## Assembling the Robot
 This part of the lab required us to attach the arduino and battery to the
 platform, assemble the wheels and ball bearing, and mount the motors.
+
 ![Assembled Robot](media/lab1-robot.jpg "Assembled Robot")
 
 ## Integrate Arduino Sketch and robot
@@ -107,3 +108,4 @@ Our robot's first autonomous drive included a quick dash forward, a 360 degree
 turn in place, followed by another dash forward. We were so proud!
 
 <div class="video"><iframe width="560" height="315" src="https://www.youtube.com/embed/XuW5_kAFOnM" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>
+
