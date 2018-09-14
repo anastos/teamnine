@@ -8,6 +8,8 @@
 
 #include "Servo.h"
 
+bool at_intersection = false;
+
 // These variables are marked 'volatile' to inform the compiler that they can change
 // at any time (as they are set by hardware interrupts).
 volatile long SENSOR_FL_TIMER;
@@ -20,7 +22,7 @@ volatile int SENSOR_FR_READING;
 Servo servo_l, servo_r;
 
 // A digital write is required to trigger a sensor reading.
-void setup_sensor(int pin, long *sensor_timer) {
+void setup_sensor(int pin, volatile long *sensor_timer) {
   *sensor_timer = micros();
   pinMode(pin, OUTPUT);
   digitalWrite(pin, HIGH);
@@ -79,6 +81,11 @@ void forward() {
   servo_r_forward();
 }
 
+void stay() {
+  servo_l_stop();
+  servo_r_stop();
+}
+
 void rotate_l() {
   servo_l_backward();
   servo_r_forward();
@@ -89,8 +96,43 @@ void rotate_r() {
   servo_r_backward();
 }
 
+void turn_l() {
+  bool fr_hit_line = false,
+       fr_off_line = false,
+       fl_hit_line = false,
+       fl_off_line = false;
+  rotate_l();
+  while (!(fr_off_line && fl_off_line)) {
+  if (fr_on_line() & !fr_hit_line)
+    fr_hit_line = true;
+  if (fl_on_line() & !fl_hit_line)
+    fl_hit_line = true;
+  if (!fr_on_line() & fr_hit_line)
+    fr_off_line = true;
+  if (!fl_on_line() & fl_hit_line)
+    fl_off_line = true;
+  }
+}
+
+void turn_r() {
+  bool fr_hit_line = false,
+       fr_off_line = false,
+       fl_hit_line = false,
+       fl_off_line = false;
+  rotate_r();
+  while (!(fr_off_line && fl_off_line)) {
+  if (fr_on_line() & !fr_hit_line)
+    fr_hit_line = true;
+  if (fl_on_line() & !fl_hit_line)
+    fl_hit_line = true;
+  if (!fr_on_line() & fr_hit_line)
+    fr_off_line = true;
+  if (!fl_on_line() & fl_hit_line)
+    fl_off_line = true;
+  }
+}
+
 void follow_line() {
-  for (;;) {
     while (fl_on_line() && !fr_on_line()) {
       rotate_l();      
     }
@@ -98,38 +140,25 @@ void follow_line() {
       rotate_r();
     }
     forward();
-  }
 }
 
 void figure_8() {
+  int cross;
   for (;;) {
-    while (fl_on_line() && !fr_on_line()) {
-      rotate_l();
-    }
-    while (fr_on_line() && !fl_on_line()) {
-      rotate_r();
-    }
     if (fr_on_line() && fl_on_line()){
-      while(fr_on_line() || fl_on_line()){
-        servo_l_stop();
-        servo_r_forward(); //turns left at every cross. Not using official rotate function because that one moves backward as it turns and messes up line-following
-      }
+      at_intersection = true;
     }
-    forward();
-  }
-}
-
-void turn_l() {
-  rotate_l();
-  while (!fr_on_line()) {
-    delay(100);
-  }
-}
-
-void turn_r() {
-  rotate_r();
-  while (!fl_on_line()) {
-    delay(100);
+    if (at_intersection && !fr_on_line() && !fl_on_line()) {
+      at_intersection = false;
+      cross ++;
+      if (cross==1 || cross==6 || cross==7 || cross==8)
+        turn_l();
+      if (cross==2 || cross== 3 || cross==4 || cross==5)
+        turn_r();
+      if (cross>=8)
+        cross=0;
+    }
+    follow_line();
   }
 }
 
@@ -149,12 +178,14 @@ void setup() {
 }
 
 void loop() {
-  // These delays are purely for ease of reading.
+//  if (fr_on_line() && fl_on_line()){
+//      at_intersection = true;
+//  }
+//  if (at_intersection && !fr_on_line() && !fl_on_line()) {
+//      at_intersection = false;
+//      //delay(50);
+//      turn_l();
+//  }
   figure_8();
-  Serial.println("Sensor 0");
-  Serial.println(SENSOR_FR_READING);
-  delay(500);
-  Serial.println("Sensor 1");
-  Serial.println(SENSOR_FL_READING);
-  delay(500);
+  follow_line();
 }
