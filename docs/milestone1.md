@@ -22,11 +22,11 @@ With the sensors straddling the white line, both sensors should detect black whe
 Here is pseudo code for this idea. Note that because the line sensors return a large range of values when analog read, we had to set a threshold for dark and light values. Any analog reading <1000 was considered to be white; a reading >1000 was considered to be black. 
 
     while (1)
-    while left sensor on line and right sensor not on line
+      while left sensor on line and right sensor not on line
         Rotate left
-    while  right sensor on line and left sensor not on line
+      while  right sensor on line and left sensor not on line
         Rotate right
-    continue forward
+      continue forward
 
 <div class="video"><iframe width="560" height="315" src="https://www.youtube.com/embed/YzMPTGq_EcQ" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>
 
