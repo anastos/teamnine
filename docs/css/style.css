@@ -73,6 +73,9 @@ code {
 img {
   display: block;
   margin: 10px auto;
-  width: 300px;
+  min-height: 300px;
+  max-height: 500px;
+  max-width: 750px;
   border-radius: 5px;
 }
+
