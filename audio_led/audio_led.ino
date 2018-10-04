@@ -16,7 +16,7 @@ int count = 0;
 void setup() {
   Serial.begin(115200); // use the serial port
   TIMSK0 = 0; // turn off timer0 for lower jitter
-  ADCSRA = 0xe5; // set the adc to free running mode
+  ADCSRA = 0xe7; // set the adc to free running mode
   ADMUX = 0x40; // use adc0
   DIDR0 = 0x01; // turn off the digital input for adc0
   pinMode(LED_BUILTIN, OUTPUT);
@@ -26,8 +26,8 @@ void loop() {
   while(1) { // reduces jitter
     cli();  // UDRE interrupt slows this way down on arduino1.0
     for (int i = 0 ; i < 512 ; i += 2) { // save 256 samples
-      while(!(ADCSRA & 0x10)); // wait for adc to be ready
-      ADCSRA = 0xf5; // restart adc
+      while (!(ADCSRA & 0x10)); // wait for adc to be ready
+      ADCSRA = 0xf7; // restart adc
       byte m = ADCL; // fetch adc data
       byte j = ADCH;
       int k = (j << 8) | m; // form into an int
@@ -41,19 +41,11 @@ void loop() {
     fft_run(); // process the data in the fft
     fft_mag_log(); // take the output of the fft
     sei();
-//    Serial.println("start");
-//    for (byte i = 0 ; i < FFT_N/2 ; i++) { 
-//      Serial.print((String)i + ": ");
-//      Serial.println(fft_log_out[i]); // send out the data
-//    }
-    if (fft_log_out[4] > 100)
+
+    if (fft_log_out[18] > 100)
       digitalWrite(LED_BUILTIN, HIGH);
     else
       digitalWrite(LED_BUILTIN, LOW);
-//    count++;
-//    if (count==20){
-//      while(1);
-//    }
-  //  delay(1000);
+
   }
 }
