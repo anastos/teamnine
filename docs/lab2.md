@@ -34,7 +34,7 @@ Mark and Gauri worked on this portion of the lab. The overall procedure can be
 summarized into following steps:
 
 * We first checked that the example script from the FFT library
-  (`fft_adc_serial`) was working correctly by connecting the function generator
+  (fft\_adc\_serial) was working correctly by connecting the function generator
   to the Arduino with a resistor and capacitor. We expected the Arduino script
   to show us the FFT of the signal produced by the function generator.
 * Unfortunately, the FFT library was incompatible with the Arduino 1.8.6
@@ -57,7 +57,7 @@ summarized into following steps:
   frequencies. The band-pass filter worked, and the output signal was more
   accurate.
 * We then connected the new microphone circuit to the Arduino (with the
-  `fft_adc_serial` sketch uploaded). We decided to set the prescaler for the ADC
+  fft\_adc\_serial sketch uploaded). We decided to set the prescaler for the ADC
   to 128 in order to give a bit more precision in the FFT. Each bin then
   contained: 16MHz / 128 prescalar / 13 clock cycles / 256 samples =
   37.6 Hz/bin. As such we expected the 660Hz signal to show up in bin 17. We
@@ -69,7 +69,7 @@ summarized into following steps:
 * We then modified the sketch to have the Arduino turn on its LED when it
   detects a 660 Hz sound:
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/GJKTKxlizJg" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+<div class="video"><iframe width="560" height="315" src="https://www.youtube.com/embed/GJKTKxlizJg" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>
 
 ## Optical Team
 
@@ -79,10 +79,10 @@ phototransistor circuit with a 1.8k Ohm resistor, and powered the IR hat with a
 
 ![Optical Oscilloscope](media/lab2-ir-oscilloscope.jpg "Optical Oscilloscope")
 
-We then loaded the `fft_adc_serial` sketch (from the IDE FFT library) onto the
+We then loaded the fft\_adc\_serial sketch (from the IDE FFT library) onto the
 Arduino Uno, and plotted the results.
 
-![Optical FFT](media/lab2-ir-fft.jpg "Optical FFT")
+![Optical FFT](media/lab2-ir-fft.png "Optical FFT")
 
 When the IR hat was present, we observed a cluster of peaks near bins 42, 84,
 and 126. This is what we expected. There are clusters because the output is not
@@ -101,17 +101,17 @@ necessary. We did decide, however, that an amplifier would be beneficial. With
 an amplifier, the Arduino could detect the light from further distances. The
 following non-inverting amplifier was built:
 
-![Optical Circuit Diagram](media/lab2-ir-diagram.jpg "Optical Circuit Diagram")
+![Optical Circuit Diagram](media/lab2-ir-diagram.png "Optical Circuit Diagram")
 
 In the amplifier circuit, a DC bias voltage was added to avoid clipping. This
 was created with the 54k and 3.3k resistors, whose values were chosen after
 experimentation. With the amplifier in place, we re-plotted the FFT transform. 
 
-![Optical FFT With Amp](media/lab2-ir-fft-amp.jpg "Optical FFT With Amp")
+![Optical FFT With Amp](media/lab2-ir-fft-amp.png "Optical FFT With Amp")
 
 The new FFT showed amplification around the main peaks.
 
-We then added the following lines to the `fft_adc_serial` sketch. This lit the
+We then added the following lines to the fft\_adc\_serial sketch. This lit the
 Arduino’s built-in LED when the IR hat was nearby.
 
     if (fft_log_out[43] > 100)
@@ -119,12 +119,12 @@ Arduino’s built-in LED when the IR hat was nearby.
     else
         digitalWrite(LED_BUILTIN, LOW);
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/Y4xkMnaVo4M" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+<div class="video"><iframe width="560" height="315" src="https://www.youtube.com/embed/Y4xkMnaVo4M" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>
 
 Finally, we integrated both systems. Our Arduino can react to both a 660 Hz tone
 and 6.8 kHz light, while ignoring a 18 kHz light!
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/ycQzP19MoYk" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+<div class="video"><iframe width="560" height="315" src="https://www.youtube.com/embed/ycQzP19MoYk" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>
 
 ## FFT Crash Course
 
@@ -142,7 +142,7 @@ such has become somewhat of a standard for frequency analysis on computers.
 
 For the purpose of this lab, we used OpenMusic Lab’s FFT library to analyze the
 signals collected by our sensors. The signals collected from the microphone and
-phototransistor were processed using the library’s `fft_adc_serial` sketch. We
+phototransistor were processed using the library’s fft\_adc\_serial sketch. We
 were then able to use the frequency data to have the Arduinos react to signals,
 and to create plots of the frequencies recieved. 
 
