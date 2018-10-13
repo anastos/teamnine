@@ -65,8 +65,8 @@ void loop() {
     ir_mag = fft_log_out[42];
     
     sei();
-
-    if (audio_mag > 100 || ir_mag > 100)
+    Serial.println(fft_log_out[42]);
+    if (ir_mag > 100)
       digitalWrite(LED_BUILTIN, HIGH);
     else
       digitalWrite(LED_BUILTIN, LOW);
