@@ -23,7 +23,7 @@ int NESW = B0000;
 int shape = B00;
 int color = B0;
 int orientation = 0; //nesw
-int [][] grid = new int [9][9];
+int grid [9][9];
 
 int ADCSRA_initial, TIMSK0_initial;
 
@@ -57,11 +57,19 @@ void r_isr() {
 }
 
 bool f_wall() {
+  if (orientation == 0)
+    NESW = NESW | B1000;
+  else if (orientation == 1)
+    NESW = NESW | B0100;
+  else if (orientation == 2)
+    NESW = NESW | B0010;
+  else if (orientation == 3)
+    NESW = NESW | B0001;
   return analogRead(WSENSOR_F_PIN) > 150;
+  
 }
 
 bool r_wall() {
-  return analogRead(WSENSOR_R_PIN) > 150;
   if (orientation == 0)
     NESW = NESW | B0100;
   else if (orientation == 1)
@@ -70,6 +78,7 @@ bool r_wall() {
     NESW = NESW | B0001;
   else if (orientation == 3)
     NESW = NESW | B1000;
+  return analogRead(WSENSOR_R_PIN) > 150;
 }
 
 void l_forward() {
@@ -213,17 +222,27 @@ void loop() {
   radio.stopListening();
 
   // Take the time, and send it.  This will block until complete
-  unsigned long time = millis();
-  printf("Now sending %lu...",time);
-  bool ok = radio.write( &time, sizeof(unsigned long) );
 
-  if (ok)
-      printf("ok...");
+  bool ok1 = radio.write( &x, sizeof(unsigned int) );
+  bool ok2 = radio.write( &y, sizeof(unsigned int) );
+  int transmitVal = (NESW * 16) | (shape * 4) | (color * 2);
+  bool ok3 = radio.write( &transmitVal, sizeof(unsigned int) );
+
+  if (ok1)
+      printf("x okay");
   else
-      printf("failed.\n\r");
+      printf("x failed.\n\r");
+  if (ok2)
+      printf("y okay");
+  else
+      printf("y failed.\n\r");
+  if (ok3)
+      printf("maze data okay");
+  else
+      printf("maze data failed.\n\r");
 
   radio.startListening();
-
+  grid[x][y] = transmitVal;
   unsigned long started_waiting_at = millis();
   bool timeout = false;
   while ( ! radio.available() && ! timeout )
