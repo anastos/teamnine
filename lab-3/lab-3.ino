@@ -17,11 +17,13 @@ int count = 0;
 volatile long l_timer, r_timer;
 volatile int l_reading, l_prev, r_reading, r_prev;
 volatile bool l_line, r_line;
-int x = B0000;
-int y = B0000;
-int NEWS = B0000;
+int x = 0;
+int y = 0;
+int NESW = B0000;
 int shape = B00;
 int color = B0;
+int orientation = 0; //nesw
+int [][] grid = new int [9][9];
 
 int ADCSRA_initial, TIMSK0_initial;
 
@@ -60,6 +62,14 @@ bool f_wall() {
 
 bool r_wall() {
   return analogRead(WSENSOR_R_PIN) > 150;
+  if (orientation == 0)
+    NESW = NESW | B0100;
+  else if (orientation == 1)
+    NESW = NESW | B0010;
+  else if (orientation == 2)
+    NESW = NESW | B0001;
+  else if (orientation == 3)
+    NESW = NESW | B1000;
 }
 
 void l_forward() {
@@ -91,6 +101,14 @@ void forward() {
       r_forward();
       if (!l_line && !r_line) {
         delay(100);
+        if (orientation == 0)
+          y++;  
+        else if (orientation == 1)
+          x++;
+        else if (orientation == 2)
+          y--;
+        else if (orientation == 3)
+          x--;
         return;
       }
     } else if (r_line && l_line)
@@ -105,14 +123,24 @@ void forward() {
 void l_turn() {
   l_backward();
   r_forward();
-  x = x + 1;
+  if (orientation == 0){
+    orientation = 3;
+  }
+  else{
+    orientation--;
+  }
   delay(500);
 }
 
 void r_turn() {
   l_forward();
   r_backward();
-  y = y + 1;
+  if (orientation == 3){
+    orientation = 0;
+  }
+  else{
+    orientation++;
+  }
   delay(500);
 }
 
