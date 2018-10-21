@@ -1,29 +1,26 @@
 #define LSENSOR_L_PIN 3
 #define LSENSOR_R_PIN 2
-#define SERVO_L_PIN 10
-#define SERVO_R_PIN 11
+#define SERVO_L_PIN 4
+#define SERVO_R_PIN 5
 #define WSENSOR_F_PIN A3
 #define WSENSOR_R_PIN A4
 #define LOG_OUT 1 // use the log output function
 #define FFT_N 256 // set to 256 point fft
-#include <SPI.h>
-#include "nRF24L01.h"
+
 #include "RF24.h"
-#include "printf.h"
 #include <FFT.h> // include the library
 #include "Servo.h"
 
-int count = 0;
 volatile long l_timer, r_timer;
 volatile int l_reading, l_prev, r_reading, r_prev;
 volatile bool l_line, r_line;
-int x = 0;
-int y = 0;
-int NESW = B0000;
-int shape = B00;
-int color = B0;
-int orientation = 0; //nesw
-int grid [9][9];
+byte x = 0;
+byte y = 0;
+byte NESW = B0000;
+byte shape = B00;
+byte color = B0;
+byte orientation = 0; //nesw
+byte grid [9][9];
 
 int ADCSRA_initial, TIMSK0_initial;
 
@@ -31,9 +28,6 @@ Servo servo_l, servo_r;
 
 // Set up nRF24L01 radio on SPI bus plus pins 9 & 10
 RF24 radio(9,10);
-
-// Radio pipe addresses for the 2 nodes to communicate.
-const uint64_t pipes[2] = { 0x0000000018LL, 0x0000000019LL };
 
 void setup_sensor(int pin, volatile long *sensor_timer) {
   *sensor_timer = micros();
@@ -155,7 +149,7 @@ void r_turn() {
 
 void setup() {
   Serial.begin(9600);
-  printf_begin();
+
   attachInterrupt(digitalPinToInterrupt(LSENSOR_R_PIN), r_isr, LOW);
   attachInterrupt(digitalPinToInterrupt(LSENSOR_L_PIN), l_isr, LOW);
   
@@ -184,16 +178,44 @@ void setup() {
   radio.setPALevel(RF24_PA_MIN);
   //RF24_250KBPS for 250kbs, RF24_1MBPS for 1Mbps, or RF24_2MBPS for 2Mbps
   radio.setDataRate(RF24_250KBPS);
-  radio.openWritingPipe(pipes[0]);
-  radio.openReadingPipe(1,pipes[1]);
-  radio.startListening();
+  radio.openWritingPipe(0x18LL);
+
   delay(100);
+  servo_stop();
+  Serial.println("before tone");
+  do {
+    ADCSRA = 0xe7; // set the adc to free running mode
+    TIMSK0 = 0; // turn off timer0 for lower jitter
+    cli();  // UDRE interrupt slows this way down on arduino1.0
+    ADMUX = 0X41;
+    for (int i = 0 ; i < 512 ; i += 2) { // save 256 samples
+      while (!(ADCSRA & 0x10)); // wait for adc to be ready
+      ADCSRA = 0xf7; // restart adc
+      byte m = ADCL; // fetch adc data
+      byte j = ADCH;
+      int k = (j << 8) | m; // form into an int
+      k -= 0x0200; // form into a signed int
+      k <<= 6; // form into a 16b signed int
+      fft_input[i] = k; // put real data into even bins
+      fft_input[i+1] = 0; // set odd bins to 0
+    }
+    fft_window(); // window the data for better frequency response
+    fft_reorder(); // reorder the data before doing the fft
+    fft_run(); // process the data in the fft
+    fft_mag_log(); // take the output of the fft
+    sei();
+    ADCSRA = ADCSRA_initial;
+    TIMSK0 = TIMSK0_initial;
+    delay(500);
+  } while (fft_log_out[18] < 100);
+  Serial.println("after tone");
+
 }
 
 void check_robots() {
   do {
     servo_stop();
-    ADCSRA = 0xe7; // set the adc to free running mode
+    ADCSRA = 0xe5; // set the adc to free running mode
     TIMSK0 = 0; // turn off timer0 for lower jitter
     cli();  // UDRE interrupt slows this way down on arduino1.0
     ADMUX = 0X40;
@@ -215,57 +237,29 @@ void check_robots() {
     sei();
     ADCSRA = ADCSRA_initial;
     TIMSK0 = TIMSK0_initial;
-  } while (fft_log_out[42] > 100);
+    if (fft_log_out[42] > 70)
+      delay(500);
+  } while (fft_log_out[42] > 70);
 }
 
 void loop() {
-  radio.stopListening();
 
-  // Take the time, and send it.  This will block until complete
+  byte data[3] = {x, y, shape << 5 | color << 4 | NESW };
+  bool ok = radio.write( &data, 3 * sizeof(byte) );
 
-  bool ok1 = radio.write( &x, sizeof(unsigned int) );
-  bool ok2 = radio.write( &y, sizeof(unsigned int) );
-  int transmitVal = (NESW * 16) | (shape * 4) | (color * 2);
-  bool ok3 = radio.write( &transmitVal, sizeof(unsigned int) );
-
-  if (ok1)
-      printf("x okay");
+  if (ok)
+    Serial.println("Ok");
   else
-      printf("x failed.\n\r");
-  if (ok2)
-      printf("y okay");
-  else
-      printf("y failed.\n\r");
-  if (ok3)
-      printf("maze data okay");
-  else
-      printf("maze data failed.\n\r");
+    Serial.println("Failed");
 
-  radio.startListening();
-  grid[x][y] = transmitVal;
-  unsigned long started_waiting_at = millis();
-  bool timeout = false;
-  while ( ! radio.available() && ! timeout )
-    if (millis() - started_waiting_at > 200 )
-      timeout = true;
-  if ( timeout )
-    {
-      printf("Failed, response timed out.\n\r");
-    }
-    else
-    {
-      // Grab the response, compare, and send to debugging spew
-      unsigned long got_time;
-      radio.read( &got_time, sizeof(unsigned long) );
-    }
-
-//  forward();
-//  if (!r_wall()) {
-//    r_turn();
-//  } else if (f_wall()) {
-//    l_turn();
-//    if (f_wall())
-//      l_turn();
-//  }
-//  check_robots();
+  grid[x][y] = data[2] | 1 << 7;
+  forward();
+  if (!r_wall()) {
+    r_turn();
+  } else if (f_wall()) {
+    l_turn();
+    if (f_wall())
+      l_turn();
+  }
+  check_robots();
 }
