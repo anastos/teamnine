@@ -9,3 +9,4 @@ Main Page
 * [Milestone 1](milestone1)
 * [Lab 2](lab2)
 * [Milestone 2](milestone2)
+* [Lab 3](lab3)
