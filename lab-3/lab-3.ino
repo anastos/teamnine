@@ -19,7 +19,7 @@ byte y = 0;
 byte NESW = B0000;
 byte shape = B00;
 byte color = B0;
-byte orientation = 0; //nesw
+byte orientation = 1; //nesw
 byte grid [9][9];
 
 int ADCSRA_initial, TIMSK0_initial;
@@ -51,28 +51,36 @@ void r_isr() {
 }
 
 bool f_wall() {
-  if (orientation == 0)
-    NESW = NESW | B1000;
-  else if (orientation == 1)
-    NESW = NESW | B0100;
-  else if (orientation == 2)
-    NESW = NESW | B0010;
-  else if (orientation == 3)
-    NESW = NESW | B0001;
   return analogRead(WSENSOR_F_PIN) > 150;
   
 }
 
 bool r_wall() {
-  if (orientation == 0)
-    NESW = NESW | B0100;
-  else if (orientation == 1)
-    NESW = NESW | B0010;
-  else if (orientation == 2)
-    NESW = NESW | B0001;
-  else if (orientation == 3)
-    NESW = NESW | B1000;
   return analogRead(WSENSOR_R_PIN) > 150;
+}
+
+void check_walls() {
+  bool fwall = analogRead(WSENSOR_F_PIN) > 150;
+  bool rwall = analogRead(WSENSOR_R_PIN) > 150;
+  grid[x][y] |= 1 << 7;
+  switch (orientation) {
+    case 0:
+      if (fwall) grid[x][y] |= 8;
+      if (rwall) grid[x][y] |= 4;
+      break;
+    case 1:
+      if (fwall) grid[x][y] |= 4;
+      if (rwall) grid[x][y] |= 2;
+      break;
+    case 2:
+      if (fwall) grid[x][y] |= 2;
+      if (rwall) grid[x][y] |= 1;
+      break;
+    case 3:
+      if (fwall) grid[x][y] |= 1;
+      if (rwall) grid[x][y] |= 8;
+      break;
+  }
 }
 
 void l_forward() {
@@ -105,11 +113,11 @@ void forward() {
       if (!l_line && !r_line) {
         delay(100);
         if (orientation == 0)
-          y++;  
+          y--;  
         else if (orientation == 1)
           x++;
         else if (orientation == 2)
-          y--;
+          y++;
         else if (orientation == 3)
           x--;
         return;
@@ -183,6 +191,7 @@ void setup() {
   delay(100);
   servo_stop();
   Serial.println("before tone");
+  int fft_prev = 0, fft_curr = 0;
   do {
     ADCSRA = 0xe7; // set the adc to free running mode
     TIMSK0 = 0; // turn off timer0 for lower jitter
@@ -206,8 +215,10 @@ void setup() {
     sei();
     ADCSRA = ADCSRA_initial;
     TIMSK0 = TIMSK0_initial;
+    fft_curr = fft_log_out[18]; 
+    Serial.println(fft_curr);
     delay(500);
-  } while (fft_log_out[18] < 100);
+  } while (fft_curr < 110);
   Serial.println("after tone");
 
 }
@@ -243,16 +254,12 @@ void check_robots() {
 }
 
 void loop() {
-
-  byte data[3] = {x, y, shape << 5 | color << 4 | NESW };
-  bool ok = radio.write( &data, 3 * sizeof(byte) );
-
-  if (ok)
-    Serial.println("Ok");
-  else
-    Serial.println("Failed");
-
-  grid[x][y] = data[2] | 1 << 7;
+  Serial.println("start loop");
+  check_walls();
+  Serial.println("before radio");
+  byte data[3] = {x, y, grid[x][y] };
+  while (!radio.write( &data, 3 * sizeof(byte) ));
+  Serial.println("after radio");
   forward();
   if (!r_wall()) {
     r_turn();
