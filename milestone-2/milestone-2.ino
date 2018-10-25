@@ -1,7 +1,7 @@
 #define LSENSOR_L_PIN 3
 #define LSENSOR_R_PIN 2
-#define SERVO_L_PIN 10
-#define SERVO_R_PIN 11
+#define SERVO_L_PIN 4
+#define SERVO_R_PIN 5
 #define WSENSOR_F_PIN A3
 #define WSENSOR_R_PIN A4
 #define LOG_OUT 1 // use the log output function

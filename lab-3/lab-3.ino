@@ -4,6 +4,7 @@
 #define SERVO_R_PIN 5
 #define WSENSOR_F_PIN A3
 #define WSENSOR_R_PIN A4
+#define WSENSOR_L_PIN A5
 #define LOG_OUT 1 // use the log output function
 #define FFT_N 256 // set to 256 point fft
 
@@ -169,6 +170,7 @@ void setup() {
     sei();
     ADCSRA = ADCSRA_initial;
     TIMSK0 = TIMSK0_initial;
+    Serial.println(fft_log_out[18]);
   } while (fft_log_out[18] < 110);
 
   servo_l.attach(SERVO_L_PIN);
@@ -178,21 +180,26 @@ void setup() {
 void check_walls() {
   bool fwall = analogRead(WSENSOR_F_PIN) > 150;
   bool rwall = analogRead(WSENSOR_R_PIN) > 150;
+  bool lwall = analogRead(WSENSOR_L_PIN) > 150;
   grid[x][y] |= 1 << 7;
   switch (orientation) {
     case 0:
+      if (lwall) grid[x][y] |= 1;
       if (fwall) grid[x][y] |= 8;
       if (rwall) grid[x][y] |= 4;
       break;
     case 1:
+      if (lwall) grid[x][y] |= 8;   
       if (fwall) grid[x][y] |= 4;
       if (rwall) grid[x][y] |= 2;
       break;
     case 2:
+      if (lwall) grid[x][y] |= 4;
       if (fwall) grid[x][y] |= 2;
       if (rwall) grid[x][y] |= 1;
       break;
     case 3:
+      if (lwall) grid[x][y] |= 2;
       if (fwall) grid[x][y] |= 1;
       if (rwall) grid[x][y] |= 8;
       break;
