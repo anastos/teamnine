@@ -17,7 +17,7 @@ void setup() {
   Serial.begin(9600); // use the serial port
   TIMSK0 = 0; // turn off timer0 for lower jitter
   ADCSRA = 0xe7; // set the adc to free running mode
-  ADMUX = 0x40; // use adc0
+  ADMUX = 0x41; // use adc0
   DIDR0 = 0x01; // turn off the digital input for adc0
   pinMode(LED_BUILTIN, OUTPUT);
 }

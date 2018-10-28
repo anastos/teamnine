@@ -1,10 +1,9 @@
 #define SENSOR_FL_PIN 3
 #define SENSOR_FR_PIN 2
-#define SENSOR_BL_PIN 4
-#define SENSOR_BR_PIN 5
 
-#define SERVO_L_PIN 10
-#define SERVO_R_PIN 11
+
+#define SERVO_L_PIN 4
+#define SERVO_R_PIN 5
 
 #include "Servo.h"
 
