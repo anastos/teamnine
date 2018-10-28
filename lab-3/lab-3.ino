@@ -57,6 +57,10 @@ bool r_wall() {
   return grid[x][y] & (8 >> ((orientation + 1) % 4));
 }
 
+bool l_wall() {
+  return grid[x][y] & (8 >> ((orientation + 3) % 4));
+}
+
 void l_forward() {
   servo_l.write(180);
 }
@@ -106,15 +110,22 @@ void forward() {
 void l_turn() {
   l_backward();
   r_forward();
-  delay(500);
+  delay(600);
   orientation = (orientation + 3) % 4;
 }
 
 void r_turn() {
   l_forward();
   r_backward();
-  delay(500);
+  delay(600);
   orientation = (orientation + 1) % 4;
+}
+
+void turn_around() {
+  l_forward();
+  r_backward();
+  delay(1500);
+  orientation = (orientation + 2) % 4;
 }
 
 void setup() {
@@ -170,11 +181,9 @@ void setup() {
     sei();
     ADCSRA = ADCSRA_initial;
     TIMSK0 = TIMSK0_initial;
-//    Serial.println(fft_log_out[18]);
-//  Serial.print("front sensor: ");
-//  Serial.println(analogRead(WSENSOR_F_PIN));
+    Serial.println(fft_log_out[18]);
   } while (fft_log_out[18] < 110);
-  
+
   servo_l.attach(SERVO_L_PIN);
   servo_r.attach(SERVO_R_PIN);
 }
@@ -224,10 +233,10 @@ void send_data() {
 
   unsigned long started_waiting_at = millis();
   bool timeout = false;
-  while ( ! radio.available() && ! timeout ){
+  while ( ! radio.available() && ! timeout )
     if (millis() - started_waiting_at > 200 )
       timeout = true;
-  }
+
   if ( timeout )
   {
     Serial.println("Failed, response timed out.");
@@ -242,7 +251,6 @@ void send_data() {
 }
 
 void check_robots() {
-  int ir_count = 0;
   do {
     servo_stop();
     ADCSRA = 0xe5; // set the adc to free running mode
@@ -267,36 +275,22 @@ void check_robots() {
     sei();
     ADCSRA = ADCSRA_initial;
     TIMSK0 = TIMSK0_initial;
-//    if (fft_log_out[42] < 60){
-//      ir_count ++;
-//    }
-//    else{
-//      ir_count = 0;
-//    }
-//  if(fft_log_out[42] < 60){
-//      digitalWrite(LED_BUILTIN, HIGH);
-//      delay(200);
-//    }
-//  else{
-//    digitalWrite(LED_BUILTIN, LOW);
-//    }
-    delay(100);
-  } while (fft_log_out[42] > 60);
+    delay(200);
+  } while (fft_log_out[42] > 90);
 }
 
 void loop() {
-  Serial.println(String(x) + ", " + String(y) + ", " + grid[x][y]);
   forward();
+  servo_stop();
   check_walls();
-  servo_stop();
   send_data();
-  if (!r_wall()) {
-    r_turn();
-  } else if (f_wall()) {
+  if (!l_wall()) {
     l_turn();
-    if (f_wall())
-      l_turn();
+  } else if (f_wall()) {
+    if (r_wall())
+      turn_around();
+    else
+      r_turn();
   }
-  servo_stop();
   check_robots();
 }
