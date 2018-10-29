@@ -66,6 +66,10 @@ p code {
   display: inline;
 }
 
+li code {
+  display: inline;
+}
+
 code {
   display: block;
   background-color: #444;
