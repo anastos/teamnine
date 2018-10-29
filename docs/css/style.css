@@ -62,6 +62,10 @@ a {
   text-align: center;
 }
 
+p code {
+  display: inline;
+}
+
 code {
   display: block;
   background-color: #444;
