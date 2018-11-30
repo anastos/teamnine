@@ -63,5 +63,5 @@ In order to combat this, we decided to try to reduce the size of the FFT library
 
 #Here is a video of the algorithm with the radio updates!
 
-<div class="video"><iframe width="560" height="315" src="https://youtu.be/MKExI6S6vzE" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>
+<div class="video"><iframe width="560" height="315" src="https://www.youtube.com/watch?v=MKExI6S6vzE&feature=youtu.be" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>
 
