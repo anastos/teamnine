@@ -21,7 +21,7 @@ The same concept applies to the maze, as we mapped the whole maze into a grid sy
 
 The blue x’s represent the dfs algorithm planned path and the red x’s represent the unvisited sibling nodes that would be saved in the stacks. 
 
-![Robot's Movement](media/robotmovement "Robot's Movement")
+![Robot's Movement](media/robotmovement.png "Robot's Movement")
 
 We used most of the code from Lab 3 in terms of implementing sensor functionality, but in order to implement DFS, we needed to incorporate the Stack data structure. We found an Arduino StackArray library online and included it in our Arduino Libraries folder. Our algorithm used two stacks, one to keep track of the frontier set of unvisited nodes and one to keep track of our the robot’s path to the current location. The second stack isn’t conventionally part of the DFS algorithm, but because the robot actually needs to retrace its steps to reach the frontier nodes, we needed the “tracing” stack as well. The trace stack is only used when the robot reaches a dead end and needs to use the frontier stack to find the next possible path. During this time, we discontinue the DFS algorithm and focus on finding the next available path. While the robot retraces the trace, we pop those values from the trace because the robot should not come back to this dead end again. 
 
@@ -39,7 +39,13 @@ Lastly, because all the neighbors are connected in a grid format, this is essent
         -currVal = frontier.pop()
         -trace.push(currVal)
         -Visited[x][y] = 1
-        -Making sure to account for orientation, if there is no wall on the left, add left coordinate to frontier; if there is no wall on right, add right coordinate to frontier; and if there is no wall forward add the forward coordinate to the frontier!
+        -Making sure to account for orientation
+            -if there is no wall on the left
+                -add left coordinate to frontier
+            -if there is no wall on right
+                -add right coordinate to frontier
+            -if there is no wall forward 
+                -add the forward coordinate to the frontier
         -If frontier is empty
             -Algorithm finished!
         -If nothing was added to frontier in this call (dead end)
