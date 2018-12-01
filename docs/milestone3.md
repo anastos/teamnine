@@ -7,7 +7,7 @@ Milestone 3
 
 ## Goal
 
-The goal of this milestone was to show that our robot was capable of  exploring the full maze using DFS, BFS, Dijkstra, or A* algorithm while also updating the GUI.
+The goal of this milestone was to show that our robot was capable of  exploring the full maze using DFS, BFS, Dijkstra, or A\* algorithm while also updating the GUI.
 
 ## Algorithm Procedure
 
@@ -52,6 +52,8 @@ Lastly, because all the neighbors are connected in a grid format, this is essent
             -Start following trace and pause dfs
         -Else 
             -Orient robot to direction of next value in frontier and continue dfs
+
+<div class="video"><iframe width="560" height="315" src="https://www.youtube.com/embed/7ATzkWn_xXY" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
 
 ## Efficient Memory Usage
 
