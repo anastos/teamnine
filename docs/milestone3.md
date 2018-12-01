@@ -29,7 +29,7 @@ The robot should continue on the trace stack until it is adjacent to the next va
 
 Another nuance in our algorithm was how we stored the stacks using the uint16_t type (declaration shown below) because in order to conserve memory, we wanted to be as efficient as possible with how we represented grid coordinates. Therefore every 2d grid coordinate can be represented with a 16 bit integer in the stack where 8 most significant bits were used for the x-coordinate and the second 8 bits represented the y-coordinate.
 
-<img src="media/stackdeclare.png" alt="Stack Declaration" width="800"/>
+<img src="media/stackdeclare.png" alt="Stack Declaration" width="600"/>
 
 Lastly, because all the neighbors are connected in a grid format, this is essentially a graph with many cycles in it. Therefore, unlike a regular DFS in a binary tree, we cannot simply assume that everything in the frontier will always be unvisited. In other words, while we do make sure that a node initially added to the frontier is unvisited, that same node might get visited from a different path later on in the algorithm, yet it would still be in the frontier stack. In order to account for that, whenever the robot reaches a dead end and needs to find the next frontier node, we first make sure to pop any values off the frontier that have already been visited. That way, the robot is sure to head back to the frontier value that is unvisited and needs to be explored. 
 
@@ -57,7 +57,7 @@ Lastly, because all the neighbors are connected in a grid format, this is essent
 
 The non-algorithmic challenge with this lab was dealing with unstable memory problems due to a majority of the dynamic memory being used in the arduino. We got a message looking like this. 
 
-<img src="media/memory.png" alt="Memory Warning" width="800"/>
+<img src="media/memory.png" alt="Memory Warning" width="600"/>
 
 In order to combat this, we decided to try to reduce the size of the FFT library from 256 buckets to 128 buckets because it doesn’t need to be that precise in order to detect 660 Hz. The other change we needed was to sample the correct bucket after the change, and after running tests on what the new FFT values looked like, we found that the new peak for 660 Hz noise happened at bucket 9. We also had to change the threshold frequency to be a bit higher now that the number of buckets decreased. We used this same process to also change the IR detecting buckets. The detection was a little weaker, but still fairly accurate. 
 
