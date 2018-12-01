@@ -81,7 +81,7 @@ code {
 img {
   display: block;
   margin: 10px auto;
-  min-height: 10px;
+  min-height: 1px;
   max-height: 500px;
   max-width: 750px;
   border-radius: 5px;
