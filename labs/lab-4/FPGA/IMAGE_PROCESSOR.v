@@ -54,9 +54,9 @@ always @(posedge CLK) begin
 	if (VGA_VSYNC_NEG) begin
 		if (VGA_PIXEL_X == 0 && VGA_PIXEL_Y == 0) begin
 		
-			if (1) begin
+			if (is_treasure) begin
 				if (treasure_color) begin
-					if (blue_count[0] > blue_count[2])/// && blue_count[1] + 250 < blue_count[2])
+					if (blue_count[0] + 250 < blue_count[1] && blue_count[1] + 250 < blue_count[2])
 						treasure_shape = 2; // TRIANGLE
 					else if (blue_count[0] + 250 < blue_count[1] && blue_count[2] + 250 < blue_count[1])
 						treasure_shape = 3; // DIAMOND
@@ -64,7 +64,7 @@ always @(posedge CLK) begin
 						treasure_shape = 1; // SQUARE
 				end
 				else begin
-					if (red_count[0] > red_count[2])/// && red_count[1] + 250 < red_count[2])
+					if (red_count[0] + 250 < red_count[1] && red_count[1] + 250 < red_count[2])
 						treasure_shape = 2; // TRIANGLE
 					else if (red_count[0] + 250 < red_count[1] && red_count[2] + 250 < red_count[1])
 						treasure_shape = 3; // DIAMOND
