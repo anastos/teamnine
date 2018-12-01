@@ -57,7 +57,7 @@ Lastly, because all the neighbors are connected in a grid format, this is essent
 
 The non-algorithmic challenge with this lab was dealing with unstable memory problems due to a majority of the dynamic memory being used in the arduino. We got a message looking like this. 
 
-<img src="media/memory.png" alt="Memory Warning" width="600"/>
+<img src="media/memory.png" alt="Memory Warning" width="750"/>
 
 In order to combat this, we decided to try to reduce the size of the FFT library from 256 buckets to 128 buckets because it doesn’t need to be that precise in order to detect 660 Hz. The other change we needed was to sample the correct bucket after the change, and after running tests on what the new FFT values looked like, we found that the new peak for 660 Hz noise happened at bucket 9. We also had to change the threshold frequency to be a bit higher now that the number of buckets decreased. We used this same process to also change the IR detecting buckets. The detection was a little weaker, but still fairly accurate. 
 
