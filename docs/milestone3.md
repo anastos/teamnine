@@ -29,12 +29,12 @@ The robot should continue on the trace stack until it is adjacent to the next va
 
 Another nuance in our algorithm was how we stored the stacks using the uint16_t type (declaration shown below) because in order to conserve memory, we wanted to be as efficient as possible with how we represented grid coordinates. Therefore every 2d grid coordinate can be represented with a 16 bit integer in the stack where 8 most significant bits were used for the x-coordinate and the second 8 bits represented the y-coordinate.
 
-![Stack Declaration](media/stackdeclare.png "Stack Declaration")
+<img src="media/stackdeclare.png" alt="drawing" width="200"/>
 
 Lastly, because all the neighbors are connected in a grid format, this is essentially a graph with many cycles in it. Therefore, unlike a regular DFS in a binary tree, we cannot simply assume that everything in the frontier will always be unvisited. In other words, while we do make sure that a node initially added to the frontier is unvisited, that same node might get visited from a different path later on in the algorithm, yet it would still be in the frontier stack. In order to account for that, whenever the robot reaches a dead end and needs to find the next frontier node, we first make sure to pop any values off the frontier that have already been visited. That way, the robot is sure to head back to the frontier value that is unvisited and needs to be explored. 
 
-#Here is the skeleton pseudocode for our dfs algorithm: 
-
+## Here is the skeleton pseudocode for our dfs algorithm: 
+   
     dfs()
         -currVal = frontier.pop()
         -trace.push(currVal)
@@ -63,5 +63,5 @@ In order to combat this, we decided to try to reduce the size of the FFT library
 
 #Here is a video of the algorithm with the radio updates!
 
-<div class="video"><iframe width="560" height="315" src="https://www.youtube.com/watch?v=MKExI6S6vzE&feature=youtu.be" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/MKExI6S6vzE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
