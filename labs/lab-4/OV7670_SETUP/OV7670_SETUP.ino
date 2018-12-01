@@ -3,10 +3,10 @@
 #define OV7670_I2C_ADDRESS  0x21 /*TODO: write this in hex (eg. 0xAB) */
 #define COM7  0x12
 #define CLKRC 0x11
-//#define COM9  0x14
+#define COM9  0x14
 #define COM3  0x0c
 #define MVFP  0x1E
-//#define COM17 0x42
+#define COM17 0x42
 #define COM15 0x40
 
 ///////// Main Program //////////////
@@ -19,16 +19,21 @@ void setup() {
   // delay(100);
   
   // TODO: WRITE KEY REGISTERS
-  OV7670_write_register(COM7, 0x80); //reset registers, color bar, rgb
+ OV7670_write_register(COM7, 0x80); //reset registers, color bar, rgb
   delay(100);
-  OV7670_write_register(COM7, 0x06); //reset registers, color bar, rgb
-  //OV7670_write_register(COM9, 0xc0); //set gain ceiling
+  OV7670_write_register(COM7, 0x0c); //reset registers, color bar, rgb USE THIS
+  //OV7670_write_register(COM7, 0x0e); //for color bar
+  OV7670_write_register(COM9, 0x31); //set gain ceiling
   OV7670_write_register(CLKRC, 0xc0); //use external clock
   OV7670_write_register(COM3, 0x08); //enable scaling
   OV7670_write_register(MVFP, 0xc0); //vertical flip
-  OV7670_write_register(COM15, 0xd0); //rgb 565 enable
+  OV7670_write_register(COM15, 0xd0); //rgb 565 enable USE THIS
+  //OV7670_write_register(COM15, 0xf0); //rgb 555 enable
+  //OV7670_write_register(COM17, 0x08);
+  OV7670_write_register(COM17, 0x00);
   read_key_registers();
   set_color_matrix();
+  Serial.println("3400 is wonderful");
 }
 
 void loop(){
