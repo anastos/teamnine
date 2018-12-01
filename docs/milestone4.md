@@ -15,7 +15,7 @@ Treasure presence and color were completed in Lab 4. To determine the shape of a
 
 Using a red treasure as example, if the top section had less red pixels than the bottom section, the treasure was determined to be a triangle. If the middle section had more red pixels than the top and bottom sections, the treasure was determined to be a diamond. Finally, if a treasure was detected that was not a triangle or diamond, it was determined to be a square. Pixel buffers were also added to prevent incorrect shape detection. This can be seen in our following implementation:
 
-    if (blue_count[0] < blue_count[2 + 250])
+    if (blue_count[0] + 250 < blue_count[1] && blue_count[1] + 250 < blue_count[2])
         treasure_shape = 2; // TRIANGLE
     else if (blue_count[0] + 250 < blue_count[1] && blue_count[2] + 250 < blue_count[1])
         treasure_shape = 3; // DIAMOND
