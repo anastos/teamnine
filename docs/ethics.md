@@ -5,7 +5,7 @@ title: Robot Ethics
 A Ban on Offensive Autonomuos Weapons
 ===============================
 
-## *4 friends are chatting in their group message after class*
+## *4 friends are chatting in their group message after class...*
 
 **Diane:** Guys… our robot still doesn’t work :( Maybe we should just add a bunch of weapons onto it and be on the attack during the competition. 
 
