@@ -11,6 +11,7 @@
 #include <FFT.h> // include the library
 #include "Servo.h"
 #include "RF24.h"
+#include <StackArray.h>
 
 RF24 radio(9,10);
 
@@ -20,8 +21,10 @@ int count = 0;
 volatile long l_timer, r_timer;
 volatile int l_reading, l_prev, r_reading, r_prev;
 volatile bool l_line, r_line;
+StackArray<uint16_t> frontier;
 
-byte x = 0, y = 1, orientation = 0;
+
+byte x = 0, y = 1, orientation = 2;
 byte grid[9][9];
 
 int ADCSRA_initial, TIMSK0_initial;
@@ -130,6 +133,9 @@ void turn_around() {
 
 void setup() {
   Serial.begin(9600);
+
+  frontier.push(x << 8 | y);
+  Serial.println("here");
 
   attachInterrupt(digitalPinToInterrupt(LSENSOR_R_PIN), r_isr, LOW);
   attachInterrupt(digitalPinToInterrupt(LSENSOR_L_PIN), l_isr, LOW);
