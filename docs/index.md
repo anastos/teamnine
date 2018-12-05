@@ -13,5 +13,5 @@ Main Page
 * [Milestone 3](milestone3)
 * [Lab 4](lab4)
 * [Milestone 4](milestone4)
-
+* [Robot Ethics](robotethics)
 
