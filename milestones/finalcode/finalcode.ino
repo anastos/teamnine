@@ -47,14 +47,14 @@ void setup_sensor(int pin, volatile long *sensor_timer) {
 void l_isr() {
   l_prev = l_reading;
   l_reading = micros() - l_timer;
-  l_line = l_reading < 170 && l_prev < 170;
+  l_line = l_reading < 120 && l_prev < 120;
   setup_sensor(LSENSOR_L_PIN, &l_timer);
 }
 
 void r_isr() {
   r_prev = r_reading;
   r_reading = micros() - r_timer;
-  r_line = r_reading < 170 && r_prev < 170;
+  r_line = r_reading < 120 && r_prev < 120;
   setup_sensor(LSENSOR_R_PIN, &r_timer);
 }
 
@@ -98,16 +98,14 @@ void forward() {
     if (at_intersection) {
       l_forward();
       r_forward();
-      if (!l_line && !r_line) {
+      if (!l_line || !r_line) {
         delay(100);
         break;
       }
     } else if (r_line && l_line){
-      //Serial.println("at intersection");
       at_intersection = true;
     }
     else {
-      //Serial.println("regular line follow"); //don't delete this print! For some reason the robot doesn't work right without it lmao.
       l_line ? l_backward() : l_forward();
       r_line ? r_backward() : r_forward();
     }
@@ -123,14 +121,14 @@ void forward() {
 void l_turn() {
   l_backward();
   r_forward();
-  delay(600);
+  delay(675);
   orientation = (orientation + 3) % 4;
 }
 
 void r_turn() {
   l_forward();
   r_backward();
-  delay(600);
+  delay(675);
   orientation = (orientation + 1) % 4;
 }
 
@@ -207,10 +205,28 @@ void setup() {
 }
 
 void check_walls() {
-  bool fwall = analogRead(WSENSOR_F_PIN) > 150;
+  bool fwall = analogRead(WSENSOR_F_PIN) > 450;
   bool rwall = analogRead(WSENSOR_R_PIN) > 150;
-  bool lwall = analogRead(WSENSOR_L_PIN) > 400;
-  grid[x][y] |= 1 << 7;
+  bool lwall = analogRead(WSENSOR_L_PIN) > 450;
+  if(!fwall){
+    fwall = analogRead(WSENSOR_F_PIN) > 450;
+    }
+  if(!rwall){
+    rwall = analogRead(WSENSOR_R_PIN) > 150;
+    }
+  if(!lwall){
+    lwall = analogRead(WSENSOR_L_PIN) > 450;
+    }
+  if(!fwall){
+    fwall = analogRead(WSENSOR_F_PIN) > 450;
+    }
+  if(!rwall){
+    rwall = analogRead(WSENSOR_R_PIN) > 150;
+    }
+  if(!lwall){
+    lwall = analogRead(WSENSOR_L_PIN) > 450;
+    }
+  grid[x][y] = 1 << 7;
   switch (orientation) {
     case 0:
       if (lwall) grid[x][y] |= 1;
@@ -268,7 +284,7 @@ void send_data() {
   }
 }
 
-void check_robots() {
+bool check_robots() {
     ADCSRA = 0xe5; // set the adc to free running mode
     TIMSK0 = 0; // turn off timer0 for lower jitter
     cli();  // UDRE interrupt slows this way down on arduino1.0
@@ -291,23 +307,7 @@ void check_robots() {
     sei();
     ADCSRA = ADCSRA_initial;
     TIMSK0 = TIMSK0_initial;
-    if (fft_log_out[21] > 115){
-      servo_stop();
-      //servo_l.detach(SERVO_L_PIN);
-      //servo_r.detach(SERVO_R_PIN);
-      delay(1000);
-      if (fft_log_out[21] > 115 && !backTrack){
-        while(!frontier.isEmpty() && visited[getX(frontier.peek())][getY(frontier.peek())] == 1){
-            frontier.pop();
-          }
-        if(!frontier.isEmpty()){
-          turn_around();
-          backTrack = true;
-        }
-      }
-      //servo_l.attach(SERVO_L_PIN);
-      //servo_r.attach(SERVO_R_PIN);
-   }  
+    return fft_log_out[21] > 115;
 }
 
 void wall_follow(){
@@ -512,6 +512,15 @@ void loop() {
 }
 else{
   servo_stop();
+//  if (check_robots()){
+//    while(check_robots()){
+//      servo_l.detach();
+//      servo_r.detach();
+//      }
+//      servo_l.attach(SERVO_L_PIN);
+//      servo_r.attach(SERVO_R_PIN);
+//      
+//    }
   check_walls();
   send_data();
   if (!backTrack) dfs();
