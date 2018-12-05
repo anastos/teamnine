@@ -11,8 +11,6 @@ A Ban on Offensive Autonomuos Weapons
 
 **Gauri:** Dude! We can’t build autonomous weapons; haven’t you heard that a bunch of really high-up researchers including Elon Musk are calling for a worldwide ban on offensive autonomous weapons? 😓😓😓😓
 
-**Stark:** give some opinions
-
 **Mark:** Well, if we don’t add weapons, some other group probably will. So we probably should have them to be safe. How would this even work?
 
 **Gauri:** But that’s why a worldwide ban of these weapons is necessary! Just like we have tried to tackle nuclear weapons and climate problems… I guess we haven’t been so successful at the latter. Not getting into that right now. 
