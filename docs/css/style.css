@@ -103,10 +103,11 @@ figure {
 }
 
 figure img {
-  margin: 0 10px;
+  margin: 0 auto;
 }
 
 .multiimage img {
   display: inline;
   max-width: 350px;
+  margin: 0 10px;
 }

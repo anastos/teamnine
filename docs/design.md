@@ -15,7 +15,7 @@ We were given a $100 budget for our robot, and only used $69!
   <tr><td>IR Distance Sensors</td><td>3</td><td>$7</td><td>$21</td></tr>
   <tr><td>Parallax Servos</td><td>2</td><td>$13</td><td>$26</td></tr>
   <tr><td>Arduino Uno</td><td>1</td><td>$16</td><td>$16</td></tr>
-  <tr><td></td><td></td><td></td><td>$69</td>
+  <tr><td></td><td></td><td></td><td>$69</td></tr>
 </table>
 
 ## System
