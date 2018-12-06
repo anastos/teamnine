@@ -10,11 +10,12 @@ Final Design
 We were given a $100 budget for our robot, and only used $69!
 
 <table>
-  <tr><td>Item</td><td>Number Used></td><td>Cost per Item</td><td>Total</td></tr>
+  <tr><td>Item</td><td>Number Used</td><td>Cost per Item</td><td>Total</td></tr>
   <tr><td>Line Sensors</td><td>2</td><td>$3</td><td>$6</td></tr>
   <tr><td>IR Distance Sensors</td><td>3</td><td>$7</td><td>$21</td></tr>
   <tr><td>Parallax Servos</td><td>2</td><td>$13</td><td>$26</td></tr>
   <tr><td>Arduino Uno</td><td>1</td><td>$16</td><td>$16</td></tr>
+  <tr><td></td><td></td><td></td><td>$69</td>
 </table>
 
 ## System
@@ -57,15 +58,11 @@ The FFT library, as stated above, helped us prevent collisions and start
 consistently. The biggest dilemma we faced with the FFT library was its size.
 Check out our Milestone 3 page to see how we counteracted this!
 
-![Nine](media/nine.jpg "Nine")
-
-Our beautiful robot, Nine.
-
-![Nine Snow](media/robot-snow.jpg "Nine Snow")
-
-Nine in the Ithaca terrain!
-
-![Nine Quad](media/robot-quad.jpg "Nine Quad")
+<figure class="multiimage">
+  <img src="media/nine.jpg" alt="Nine" title="Nine" />
+  <img src="media/robot-snow.jpg" alt="Nine Snow" title="Nine Snow" />
+  <figcaption>Our beautiful robot, Nine.</figcaption>
+</figure>
 
 ## Future Improvements
 
@@ -83,4 +80,7 @@ improvement! To future 3400 groups:
 * Finally, and most importantly, have fun! Take this opportunity to learn, meet
   new people, and use your expertise to shine. It’s going to be okay, we promise :)
 
-![Team Photo](media/team-photo.jpg "Team Photo")
+<figure>
+  <img src="media/team-photo.jpg" alt="Team Photo" title="Team Photo" />
+  <figcaption>All smiles, even after the competition!</figcaption>
+</figure>

@@ -87,3 +87,26 @@ img {
   border-radius: 5px;
 }
 
+table {
+  margin: 0 auto;
+  background-color: #444;
+  border-radius: 5px;
+}
+
+td {
+  text-align: center;
+  padding: 10px;
+}
+
+figure {
+  text-align: center;
+}
+
+figure img {
+  margin: 0 10px;
+}
+
+.multiimage img {
+  display: inline;
+  max-width: 350px;
+}

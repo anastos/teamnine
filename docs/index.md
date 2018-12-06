@@ -25,8 +25,9 @@ see it accomplish tons as each lab and milestone progresses!
   weapons would work.
 * [Final Design](design): A summary of Nine's final design.
 
-![Winter Maintenance](media/robot-maintenance.jpg "Winter Maintenance")
-
-"No Winter Maintenance" has no effect on our team!
+<figure>
+  <img src="media/robot-maintenance.jpg" alt="Winter Maintenance" title="Winter Maintenance">
+  <figcaption>"No Winter Maintenance" has no effect on our team!</figcaption>
+</figure>
 
 [1]: https://s3.amazonaws.com/southfloridareporter/wp-content/uploads/2017/09/13084901/9fe4fa6a965562be6f2e97542d681168.jpg
